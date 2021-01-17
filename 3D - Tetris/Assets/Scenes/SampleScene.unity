@@ -396,10 +396,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game:
-    gameSpeed: 0
-    boardWidth: 6
-    boardDepth: 6
-    boardHeight: 8
+    timeBetweenUpdates: 1
+    boardWidth: 7
+    boardDepth: 7
+    boardHeight: 10
     cubePrefab: {fileID: 0}
   cam:
     camRotationSpeed: 1

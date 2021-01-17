@@ -7,6 +7,11 @@ public class TetrisController : TetrisElement
     [HideInInspector] public CameraController cam;
     public void Init()
     {
+        app.transform.position +=
+            Vector3.forward * (app.model.game.boardWidth / 2)
+            + Vector3.right * (app.model.game.boardDepth / 2)
+            + Vector3.up * (app.model.game.boardHeight / 2);
+
         cam = GetComponentInChildren<CameraController>();
         cam.Init();
 
@@ -40,19 +45,26 @@ public class TetrisController : TetrisElement
             cube.localPosition = shapeData.blocksPositions[i];
         }
 
+
+        Vector3 initialStartingPos;
+
+        // Set initial starting pos
+        initialStartingPos = new Vector3(
+            app.model.game.boardWidth / 2,
+            app.model.game.boardHeight,
+            app.model.game.boardDepth / 2);
+
         // Check if the board dimensions are even
         if (app.model.game.boardWidth % 2 == 0)
-            shape.transform.position += Vector3.forward * .5f; // Correct starting position
+            initialStartingPos += Vector3.forward * .5f;
         if (app.model.game.boardDepth % 2 == 0)
-            shape.transform.position -= Vector3.right * .5f; // Correct starting position
+            initialStartingPos -= Vector3.right * .5f;
+        if(app.model.game.boardHeight % 2 == 0)
+            initialStartingPos += Vector3.up * .5f;
 
-
-        // Set shape Y position
-        shape.transform.position +=
-             Vector3.up * (((float)app.model.game.boardHeight / 2) + .5f);
-
+        shape.transform.position = initialStartingPos;
         // Set shape parent
-        //shape.transform.SetParent(app.view.shapesParent, true);
+        // shape.transform.SetParent(app.view.shapesParent, true);
 
         return shape;
     }
@@ -77,11 +89,15 @@ public class TetrisController : TetrisElement
     {
         foreach (Transform block in app.view.currentShape)
         {
-            int x = (int)block.transform.position.x + Mathf.FloorToInt(app.model.game.boardWidth);
-            int y = (int)block.transform.position.y + Mathf.FloorToInt(app.model.game.boardHeight);
-            int z = (int)block.transform.position.z + Mathf.FloorToInt(app.model.game.boardDepth);
+            int x = (int)block.transform.position.x;
+            int y = (int)block.transform.position.y;
+            int z = (int)block.transform.position.z;
 
-            app.model.game.grid[x, y, z] = block.transform;
+            if(y > app.model.game.boardHeight)
+            {
+                // Lost!
+            }else
+                app.model.game.grid[x, y, z] = block.transform;
         }
     }
 
@@ -107,27 +123,26 @@ public class TetrisController : TetrisElement
     {
         foreach (Transform block in app.view.currentShape)
         {
-            int roundX = Mathf.RoundToInt(block.position.x);
-            int roundY = Mathf.RoundToInt(block.position.y);
-            int roundZ = Mathf.RoundToInt(block.position.z);
+            int roundX = Mathf.CeilToInt(block.position.x);
+            int roundY = Mathf.CeilToInt(block.position.y);
+            int roundZ = Mathf.CeilToInt(block.position.z);
 
             // Check if its withing width dimensions
-            if (roundX > app.model.game.boardWidth / 2 || roundX < -app.model.game.boardWidth / 2)
+            if (roundX >= app.model.game.boardWidth || roundX < 0)
                 return false;
             // Check if its withing depth dimensions
-            if (roundZ > app.model.game.boardDepth / 2 || roundZ < -app.model.game.boardDepth / 2)
+            if (roundZ >= app.model.game.boardDepth || roundZ < 0)
                 return false;
             // Check if it touched the ground
-            if (roundY < -app.model.game.boardHeight / 2)
+            if (roundY < 0)
                 return false;
 
-            // Add offset to make variables positive
-            roundX += Mathf.FloorToInt(app.model.game.boardWidth);
-            roundY += Mathf.FloorToInt(app.model.game.boardHeight);
-            roundZ += Mathf.FloorToInt(app.model.game.boardDepth);
-
-            if (app.model.game.grid[roundX, roundY, roundZ] != null)
-                return false;
+            // Check if block is inside the grid
+            // (When you create shapes there are som blocks that are a bit higher than the grid)
+            if (roundY < app.model.game.boardHeight)
+                // Check if the the block is free
+                if (app.model.game.grid[roundX, roundY, roundZ] != null)
+                    return false;
         }
 
         return true;
