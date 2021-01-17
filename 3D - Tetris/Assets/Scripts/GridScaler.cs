@@ -15,7 +15,10 @@ public class GridScaler : MonoBehaviour
         _matWallsX = meshRen.sharedMaterials[1];
         _matBottom = meshRen.sharedMaterials[2];
 
-        ScaleGrid(2, 3, 4);
+        ScaleGrid(
+            TetrisApplication.instance.model.game.boardWidth,
+            TetrisApplication.instance.model.game.boardDepth,
+            TetrisApplication.instance.model.game.boardHeight);
     }
 
     public void ScaleGrid(float width, float depth, float height)

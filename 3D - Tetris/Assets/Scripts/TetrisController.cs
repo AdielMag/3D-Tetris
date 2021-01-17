@@ -13,10 +13,10 @@ public class TetrisController : TetrisElement
         app.view.currentShape = CreateShape("L");
     }
 
-    public ShapeView CreateShape(string name) 
+    public Transform CreateShape(string name) 
     {
         // Create new shape
-        ShapeView shape = new GameObject(name).AddComponent<ShapeView>();
+        Transform shape = new GameObject(name).transform;
 
         // Get shape data
         ShapeModel shapeData = app.model.game.shapes[name];
@@ -42,10 +42,32 @@ public class TetrisController : TetrisElement
     {
         app.view.currentShape.transform.position +=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
+
+        if(!Valid())
+            app.view.currentShape.transform.position -=
+            cam.SnappedRight * input.x + cam.SnappedForward * input.y;
     }
 
     public void RotateShape(Vector3 axis)
     {
         app.view.currentShape.transform.Rotate(axis, 90,Space.World);
+        if (!Valid())
+            app.view.currentShape.transform.Rotate(axis, -90, Space.World);
+
+    }
+
+    bool Valid() 
+    {
+        foreach (Transform block in app.view.currentShape)
+        {
+            if (block.position.x > app.model.game.boardWidth / 2
+                || block.position.x < -app.model.game.boardWidth / 2)
+                return false;
+            else if (block.position.z > app.model.game.boardDepth / 2
+                || block.position.z < -app.model.game.boardDepth / 2)
+                return false;
+        }
+
+        return true;
     }
 }

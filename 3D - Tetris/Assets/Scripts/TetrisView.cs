@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TetrisView : TetrisElement
 {
-    public ShapeView currentShape;
+    public Transform currentShape;
 
     [Space]
     public Transform shapesParent;
