@@ -19,7 +19,7 @@ public class TetrisController : TetrisElement
         _fallLocIndic = GetComponentInChildren<FallLocationIndicatorController>();
         _fallLocIndic.Init();
 
-        app.view.currentShape = CreateShape("L");
+        CreateNewShape("L");
     }
 
     private float _previousUpdateTime;
@@ -35,7 +35,7 @@ public class TetrisController : TetrisElement
         }
     }
 
-    public Transform CreateShape(string name)
+    public void CreateNewShape(string name)
     {
         // Create new shape
         Transform shape = new GameObject(name).transform;
@@ -71,39 +71,49 @@ public class TetrisController : TetrisElement
 
         shape.transform.position = initialStartingPos;
         // Set shape parent
-        // shape.transform.SetParent(app.view.shapesParent, true);
+        shape.transform.SetParent(app.model.game.shapesParent, true);
 
-        return shape;
+        app.model.game.currentShape = shape;
+
+        // Set new indicator
+        _fallLocIndic.SetNewIndicator();
+        // Update fall location indicator
+        _fallLocIndic.UpdateIndicator();
     }
 
     private void UpdateGame() 
     {
         // Move shape down
-        app.view.currentShape.transform.position -= Vector3.up;
-        if (!Valid()) // Check if its not valid
+        app.model.game.currentShape.transform.position -= Vector3.up;
+
+        // Update fall location indicator
+        _fallLocIndic.UpdateIndicator();
+
+        if (!ValidBlocksPosition()) // Check if its not valid
         {
             // Move shape up
-            app.view.currentShape.transform.position += Vector3.up;
+            app.model.game.currentShape.transform.position += Vector3.up;
 
             AddCurrentShapeBlocksToGrid();
 
             // Create new shape
-            app.view.currentShape = CreateShape("L");
+            CreateNewShape("L");
         }
     }
 
     public void AddCurrentShapeBlocksToGrid()
     {
-        foreach (Transform block in app.view.currentShape)
+        foreach (Transform block in app.model.game.currentShape)
         {
             int x = (int)block.transform.position.x;
             int y = (int)block.transform.position.y;
             int z = (int)block.transform.position.z;
 
-            if(y > app.model.game.boardHeight)
+            if (y > app.model.game.boardHeight)
             {
                 // Lost!
-            }else
+            }
+            else
                 app.model.game.grid[x, y, z] = block.transform;
         }
     }
@@ -132,29 +142,35 @@ public class TetrisController : TetrisElement
     }
     private void MoveShape(Vector2 input)
     {
-        app.view.currentShape.transform.position +=
+        app.model.game.currentShape.transform.position +=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
 
-        if(!Valid())
-            app.view.currentShape.transform.position -=
+        if(!ValidBlocksPosition())
+            app.model.game.currentShape.transform.position -=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
+
+        // Update fall location indicator
+        _fallLocIndic.UpdateIndicator();
     }
 
     private void RotateShape(Vector3 actualAxis)
     {
-        app.view.currentShape.transform.Rotate(actualAxis, 90,Space.World);
-        if (!Valid())
-            app.view.currentShape.transform.Rotate(actualAxis, -90, Space.World);
+        app.model.game.currentShape.transform.Rotate(actualAxis, 90,Space.World);
+        if (!ValidBlocksPosition())
+            app.model.game.currentShape.transform.Rotate(actualAxis, -90, Space.World);
+
+        // Update fall location indicator
+        _fallLocIndic.UpdateIndicator();
     }
     
     // Validate if current shape blocks positions are allowed
-    bool Valid() 
+    bool ValidBlocksPosition() 
     {
-        foreach (Transform block in app.view.currentShape)
+        foreach (Transform block in app.model.game.currentShape)
         {
-            int roundX = Mathf.CeilToInt(block.position.x);
-            int roundY = Mathf.CeilToInt(block.position.y);
-            int roundZ = Mathf.CeilToInt(block.position.z);
+            int roundX = Mathf.FloorToInt(block.position.x);
+            int roundY = Mathf.FloorToInt(block.position.y);
+            int roundZ = Mathf.FloorToInt(block.position.z);
 
             // Check if its withing width dimensions
             if (roundX >= app.model.game.boardWidth || roundX < 0)
@@ -167,9 +183,9 @@ public class TetrisController : TetrisElement
                 return false;
 
             // Check if block is inside the grid
-            // (When you create shapes there are som blocks that are a bit higher than the grid)
+            // (When you create shapes there are some blocks that are a bit higher than the grid)
             if (roundY < app.model.game.boardHeight)
-                // Check if the the block is free
+                // Check if block position is free
                 if (app.model.game.grid[roundX, roundY, roundZ] != null)
                     return false;
         }

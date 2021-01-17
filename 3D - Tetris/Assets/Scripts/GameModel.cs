@@ -6,17 +6,19 @@ using UnityEngine;
 [System.Serializable]
 public class GameModel
 {
-    public float timeBetweenUpdates = 5;
-    public int boardWidth, boardDepth, boardHeight;
+    public Transform currentShape;
+    public Transform shapesParent;
+    public Transform fallLocationCubesParent;
 
     public Transform[,,] grid;
 
+    public float timeBetweenUpdates = 5;
+    public int boardWidth, boardDepth, boardHeight;
+
     public Dictionary<string, ShapeModel> shapes;
 
-    public Transform fallLocationCubesParent;
-
-    public GameObject cubePrefab;
-    public GameObject fallIndicatorCubePrefab;
+    [HideInInspector] public GameObject cubePrefab;
+    [HideInInspector] public GameObject fallIndicatorCubePrefab;
 
     public Dictionary<string, ShapeModel> LoadShapes()
     {

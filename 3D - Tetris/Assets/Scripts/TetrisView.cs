@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class TetrisView : TetrisElement
 {
-    public Transform currentShape;
-
-    [Space]
-    public Transform shapesParent;
-
     public UserInput input;
 
     public void Init()
