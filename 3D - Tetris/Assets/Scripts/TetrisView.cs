@@ -8,7 +8,6 @@ public class TetrisView : TetrisElement
 
     [Space]
     public Transform shapesParent;
-    public Transform shapeCreationPos;
 
     public void Init()
     {

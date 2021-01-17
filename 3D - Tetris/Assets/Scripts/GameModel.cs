@@ -6,11 +6,12 @@ using UnityEngine;
 [System.Serializable]
 public class GameModel
 {
-    public float gameSpeed;
+    public float timeBetweenUpdates = 5;
     public int boardWidth, boardDepth, boardHeight;
 
-    public Dictionary<string, ShapeModel>shapes;
+    public Transform[,,] grid;
 
+    public Dictionary<string, ShapeModel> shapes;
     public GameObject cubePrefab;
     
     public Dictionary<string, ShapeModel> LoadShapes()

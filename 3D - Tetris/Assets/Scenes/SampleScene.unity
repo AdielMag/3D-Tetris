@@ -120,36 +120,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &122081544
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 122081545}
-  m_Layer: 0
-  m_Name: shapes_creation_point
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &122081545
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 122081544}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.875, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 680702357}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &355213375
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +246,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 680702353}
-  m_Mesh: {fileID: 4493585093827132993, guid: 4e38820a3ee0fe144972a7344907b29a, type: 3}
+  m_Mesh: {fileID: 4493585093827132993, guid: a897a6c1d3291bc4d8bd8861b41e2831, type: 3}
 --- !u!4 &680702357
 Transform:
   m_ObjectHideFlags: 0
@@ -287,8 +257,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 122081545}
+  m_Children: []
   m_Father: {fileID: 1871270464}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -428,9 +397,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   game:
     gameSpeed: 0
-    boardWidth: 5
-    boardDepth: 5
-    boardHeight: 9
+    boardWidth: 6
+    boardDepth: 6
+    boardHeight: 8
     cubePrefab: {fileID: 0}
   cam:
     camRotationSpeed: 1
@@ -487,7 +456,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 65
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -513,7 +482,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -5.02}
+  m_LocalPosition: {x: 0, y: 1, z: -10.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1592054901}
@@ -568,7 +537,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentShape: {fileID: 0}
   shapesParent: {fileID: 1743756763}
-  shapeCreationPos: {fileID: 122081545}
 --- !u!1 &1592054900
 GameObject:
   m_ObjectHideFlags: 0

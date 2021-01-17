@@ -13,7 +13,17 @@ public class TetrisController : TetrisElement
         app.view.currentShape = CreateShape("L");
     }
 
-    public Transform CreateShape(string name) 
+    private float _previousUpdateTime;
+    private void Update()
+    {
+        if (Time.time - _previousUpdateTime > app.model.game.timeBetweenUpdates)
+        {
+            _previousUpdateTime = Time.time;
+            UpdateGame();
+        }
+    }
+
+    public Transform CreateShape(string name)
     {
         // Create new shape
         Transform shape = new GameObject(name).transform;
@@ -21,7 +31,7 @@ public class TetrisController : TetrisElement
         // Get shape data
         ShapeModel shapeData = app.model.game.shapes[name];
 
-        for(int i= 0;i< shapeData.blocksPositions.Length; i++)
+        for (int i = 0; i < shapeData.blocksPositions.Length; i++)
         {
             // Create cube
             Transform cube = Instantiate(app.model.game.cubePrefab, shape.transform).transform;
@@ -30,12 +40,49 @@ public class TetrisController : TetrisElement
             cube.localPosition = shapeData.blocksPositions[i];
         }
 
-        shape.transform.position = app.view.shapeCreationPos.position;
+        // Check if the board dimensions are even
+        if (app.model.game.boardWidth % 2 == 0)
+            shape.transform.position += Vector3.forward * .5f; // Correct starting position
+        if (app.model.game.boardDepth % 2 == 0)
+            shape.transform.position -= Vector3.right * .5f; // Correct starting position
+
+
+        // Set shape Y position
+        shape.transform.position +=
+             Vector3.up * (((float)app.model.game.boardHeight / 2) + .5f);
 
         // Set shape parent
         //shape.transform.SetParent(app.view.shapesParent, true);
 
         return shape;
+    }
+
+    private void UpdateGame() 
+    {
+        // Move shape down
+        app.view.currentShape.transform.position -= Vector3.up;
+        if (!Valid()) // Check if its not valid
+        {
+            // Move shape up
+            app.view.currentShape.transform.position += Vector3.up;
+
+            AddCurrentShapeBlocksToGrid();
+
+            // Create new shape
+            app.view.currentShape = CreateShape("L");
+        }
+    }
+
+    public void AddCurrentShapeBlocksToGrid()
+    {
+        foreach (Transform block in app.view.currentShape)
+        {
+            int x = (int)block.transform.position.x + Mathf.FloorToInt(app.model.game.boardWidth);
+            int y = (int)block.transform.position.y + Mathf.FloorToInt(app.model.game.boardHeight);
+            int z = (int)block.transform.position.z + Mathf.FloorToInt(app.model.game.boardDepth);
+
+            app.model.game.grid[x, y, z] = block.transform;
+        }
     }
 
     public void MoveShape(Vector2 input)
@@ -60,14 +107,30 @@ public class TetrisController : TetrisElement
     {
         foreach (Transform block in app.view.currentShape)
         {
-            if (block.position.x > app.model.game.boardWidth / 2
-                || block.position.x < -app.model.game.boardWidth / 2)
+            int roundX = Mathf.RoundToInt(block.position.x);
+            int roundY = Mathf.RoundToInt(block.position.y);
+            int roundZ = Mathf.RoundToInt(block.position.z);
+
+            // Check if its withing width dimensions
+            if (roundX > app.model.game.boardWidth / 2 || roundX < -app.model.game.boardWidth / 2)
                 return false;
-            else if (block.position.z > app.model.game.boardDepth / 2
-                || block.position.z < -app.model.game.boardDepth / 2)
+            // Check if its withing depth dimensions
+            if (roundZ > app.model.game.boardDepth / 2 || roundZ < -app.model.game.boardDepth / 2)
+                return false;
+            // Check if it touched the ground
+            if (roundY < -app.model.game.boardHeight / 2)
+                return false;
+
+            // Add offset to make variables positive
+            roundX += Mathf.FloorToInt(app.model.game.boardWidth);
+            roundY += Mathf.FloorToInt(app.model.game.boardHeight);
+            roundZ += Mathf.FloorToInt(app.model.game.boardDepth);
+
+            if (app.model.game.grid[roundX, roundY, roundZ] != null)
                 return false;
         }
 
         return true;
     }
+
 }

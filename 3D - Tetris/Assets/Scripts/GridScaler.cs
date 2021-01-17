@@ -27,14 +27,6 @@ public class GridScaler : MonoBehaviour
 
         _matWallsZ.mainTextureScale = new Vector2(width, height);
         _matWallsX.mainTextureScale = new Vector2(depth, height);
-        _matBottom.mainTextureScale = new Vector2(width, height);
-
-        SetGridYPosition(height);
-    }
-
-    private void SetGridYPosition(float height)
-    {
-        float targetHeight = -height / 2;
-        transform.localPosition = new Vector3(0, targetHeight, 0);
+        _matBottom.mainTextureScale = new Vector2(width, depth);
     }
 }
