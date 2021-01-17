@@ -55,9 +55,9 @@ public class FallLocationIndicatorController : TetrisElement
         {
             float targetY = cube.position.y;
 
-            // Check if there's a cube under the shape that prevents
+            // Check if there's a cube under the shape cube that prevents
             // the shape from falling to the floor and store
-            //its y position to position the indicator in the right place
+            // its y position to position the indicator in the right place
             for (int y = Mathf.FloorToInt(targetY); y > 0; y--)
                 if (!Valid(new Vector3(cube.position.x, y - 1, cube.position.z)))
                 {
@@ -65,6 +65,7 @@ public class FallLocationIndicatorController : TetrisElement
                     break;
                 }
 
+            // Check if this cube distance from the floor is the closest one
             if (targetY < minDisFrmFlr)
                 minDisFrmFlr = targetY;
         }

@@ -524,8 +524,32 @@ MonoBehaviour:
     fallIndicatorCubePrefab: {fileID: 0}
   cam:
     camRotationSpeed: 1
-    camPitchLimits: {x: -15, y: 45}
+    camPitchLimits: {x: 0, y: 45}
     camParent: {fileID: 0}
+    ditanceScale:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0.005666215
+        value: 1.3028017
+        inSlope: -0.15286115
+        outSlope: -0.15286115
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.22500004
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: -0.41272238
+        outSlope: -0.41272238
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.083333306
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,7 +627,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10.26}
+  m_LocalPosition: {x: 0, y: 0, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1592054901}

@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class CameraController : TetrisElement
 {
-    private float yaw = 0.0f;
-    private float pitch = 0.0f;
+    private Transform _cameraChild;
+
+    private float _baseDistance;
+
+    private float _yaw = 0.0f;
+    private float _pitch = 0.0f;
 
     public void Init()
     {
-        yaw = app.model.cam.camParent.eulerAngles.y;
-        pitch = app.model.cam.camParent.eulerAngles.x;
+        _cameraChild = app.model.cam.camParent.GetChild(0);
+
+        _baseDistance = _cameraChild.localPosition.z;
+
+        _yaw = app.model.cam.camParent.eulerAngles.y;
+        _pitch = app.model.cam.camParent.eulerAngles.x;
     }
 
     public void OnPlayerInput(Vector2 inputDelta)
@@ -21,14 +29,23 @@ public class CameraController : TetrisElement
     private void RotateCamera(Vector2 inputDelta)
     {
         // Update yaw * pitch based on inputDelta
-        yaw += app.model.cam.camRotationSpeed * inputDelta.x;
-        pitch -= app.model.cam.camRotationSpeed * inputDelta.y;
+        _yaw += app.model.cam.camRotationSpeed * inputDelta.x;
+        _pitch -= app.model.cam.camRotationSpeed * inputDelta.y;
 
         // Clamp pitch 
-        pitch = Mathf.Clamp(pitch, app.model.cam.camPitchLimits.x, app.model.cam.camPitchLimits.y);
+        _pitch = Mathf.Clamp(
+            _pitch, app.model.cam.camPitchLimits.x, app.model.cam.camPitchLimits.y);
 
         // Set euler angles
-        app.model.cam.camParent.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+        app.model.cam.camParent.eulerAngles
+            = new Vector3(_pitch, _yaw, 0.0f);
+
+        // Set camera distance
+        _cameraChild.transform.localPosition = new Vector3(
+            _cameraChild.transform.localPosition.x,
+            _cameraChild.transform.localPosition.y,
+            _baseDistance * app.model.cam.ditanceScale.Evaluate
+            (_pitch/ app.model.cam.camPitchLimits.y));
     }
 
     public Vector3 SnappedForward
