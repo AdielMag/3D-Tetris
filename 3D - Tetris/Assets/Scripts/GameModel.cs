@@ -12,8 +12,12 @@ public class GameModel
     public Transform[,,] grid;
 
     public Dictionary<string, ShapeModel> shapes;
+
+    public Transform fallLocationCubesParent;
+
     public GameObject cubePrefab;
-    
+    public GameObject fallIndicatorCubePrefab;
+
     public Dictionary<string, ShapeModel> LoadShapes()
     {
         Dictionary<string, ShapeModel> parsedData = new Dictionary<string, ShapeModel>();

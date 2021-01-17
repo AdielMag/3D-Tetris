@@ -13,8 +13,9 @@ public class TetrisModel : TetrisElement
 
         // Load data
         game.shapes = game.LoadShapes();
-        game.cubePrefab = Resources.Load<GameObject>("CubePrefab");
-
+        game.cubePrefab = Resources.Load<GameObject>("Prefabs/CubePrefab");
+        game.fallIndicatorCubePrefab =
+            Resources.Load<GameObject>("Prefabs/FallIndicatorCubePrefab");
         game.grid = new Transform[game.boardWidth, game.boardHeight, game.boardDepth];
     }
 }

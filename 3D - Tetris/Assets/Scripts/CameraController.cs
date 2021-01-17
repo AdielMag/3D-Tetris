@@ -12,7 +12,13 @@ public class CameraController : TetrisElement
         yaw = app.model.cam.camParent.eulerAngles.y;
         pitch = app.model.cam.camParent.eulerAngles.x;
     }
-    public void RotateCamera(Vector2 inputDelta)
+
+    public void OnPlayerInput(Vector2 inputDelta)
+    {
+        RotateCamera(inputDelta);
+    }
+
+    private void RotateCamera(Vector2 inputDelta)
     {
         // Update yaw * pitch based on inputDelta
         yaw += app.model.cam.camRotationSpeed * inputDelta.x;
@@ -39,7 +45,6 @@ public class CameraController : TetrisElement
             return SnapDirectionToGridDirections(app.model.cam.camParent.right);
         }
     }
-
     public Vector3 SnappedUp
     {
         get
@@ -47,6 +52,7 @@ public class CameraController : TetrisElement
             return SnapDirectionToGridDirections(app.model.cam.camParent.up);
         }
     }
+
     private Vector3 SnapDirectionToGridDirections(Vector3 direciton)
     {
         float x = Mathf.Abs(direciton.x);

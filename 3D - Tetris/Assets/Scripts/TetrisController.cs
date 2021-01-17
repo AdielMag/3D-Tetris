@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TetrisController : TetrisElement
 {
-    [HideInInspector] public CameraController cam;
+    public  CameraController cam;
+    private FallLocationIndicatorController _fallLocIndic;
     public void Init()
     {
         app.transform.position +=
@@ -15,13 +16,19 @@ public class TetrisController : TetrisElement
         cam = GetComponentInChildren<CameraController>();
         cam.Init();
 
+        _fallLocIndic = GetComponentInChildren<FallLocationIndicatorController>();
+        _fallLocIndic.Init();
+
         app.view.currentShape = CreateShape("L");
     }
 
     private float _previousUpdateTime;
     private void Update()
     {
-        if (Time.time - _previousUpdateTime > app.model.game.timeBetweenUpdates)
+        float timeToWait = app.view.input.fallFaster ?
+            app.model.game.timeBetweenUpdates / 10 : app.model.game.timeBetweenUpdates;
+
+        if (Time.time - _previousUpdateTime > timeToWait)
         {
             _previousUpdateTime = Time.time;
             UpdateGame();
@@ -101,7 +108,29 @@ public class TetrisController : TetrisElement
         }
     }
 
-    public void MoveShape(Vector2 input)
+    public void OnMovementInput(Vector2 input) 
+    {
+        MoveShape(input);
+    }
+    public void OnRotationInput(UserInput.RotationAxis axis) 
+    {
+        Vector3 targetAxis;
+        switch (axis)
+        {
+            default:
+                targetAxis = cam.SnappedRight;
+                break;
+            case UserInput.RotationAxis.Up:
+                targetAxis = -Vector3.up;
+                break;
+            case UserInput.RotationAxis.Forward:
+                targetAxis = -cam.SnappedForward;
+                break;
+        }
+
+        RotateShape(targetAxis);
+    }
+    private void MoveShape(Vector2 input)
     {
         app.view.currentShape.transform.position +=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
@@ -111,14 +140,14 @@ public class TetrisController : TetrisElement
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
     }
 
-    public void RotateShape(Vector3 axis)
+    private void RotateShape(Vector3 actualAxis)
     {
-        app.view.currentShape.transform.Rotate(axis, 90,Space.World);
+        app.view.currentShape.transform.Rotate(actualAxis, 90,Space.World);
         if (!Valid())
-            app.view.currentShape.transform.Rotate(axis, -90, Space.World);
-
+            app.view.currentShape.transform.Rotate(actualAxis, -90, Space.World);
     }
-
+    
+    // Validate if current shape blocks positions are allowed
     bool Valid() 
     {
         foreach (Transform block in app.view.currentShape)
@@ -147,5 +176,4 @@ public class TetrisController : TetrisElement
 
         return true;
     }
-
 }
