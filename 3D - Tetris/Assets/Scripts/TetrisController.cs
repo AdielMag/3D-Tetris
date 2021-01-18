@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TetrisController : TetrisElement
 {
@@ -71,16 +72,27 @@ public class TetrisController : TetrisElement
         // Get shape data
         ShapeModel shapeData = app.model.game.shapes[name];
 
+        Material targetMat = GetCubeMat();
+
+        // Create cubes & set color
         for (int i = 0; i < shapeData.blocksPositions.Length; i++)
         {
             // Create cube
-            Transform cube = Instantiate(app.model.game.cubePrefab, shape.transform).transform;
+            Transform cube = 
+                Instantiate(app.model.game.cubePrefab, shape.transform).transform;
 
             // Place cube based on data
             cube.localPosition = shapeData.blocksPositions[i];
+
+            Material[] mats = new Material[2];
+
+            mats[0] = app.model.game.cubeSquaresMatt;
+            mats[1] = targetMat;
+
+            cube.GetComponent<MeshRenderer>().materials = mats;
         }
 
-
+        #region Set shape pos
         Vector3 initialStartingPos;
 
         // Set initial starting pos
@@ -98,10 +110,12 @@ public class TetrisController : TetrisElement
             initialStartingPos += Vector3.up * .5f;
 
         shape.transform.position = initialStartingPos;
-        // Set shape parent
-        shape.transform.SetParent(app.model.game.shapesParent, true);
+        #endregion
 
-        app.model.game.currentShape = shape;
+        // Set shape parent
+        shape.transform.SetParent(app.model.shapesParent, true);
+
+        app.model.currentShape = shape;
 
         // Set new indicator
         _fallLocIndic.SetNewIndicator();
@@ -112,7 +126,7 @@ public class TetrisController : TetrisElement
     private void UpdateGame() 
     {
         // Move shape down
-        app.model.game.currentShape.transform.position -= Vector3.up;
+        app.model.currentShape.transform.position -= Vector3.up;
 
         // Update fall location indicator
         _fallLocIndic.UpdateIndicator();
@@ -120,7 +134,7 @@ public class TetrisController : TetrisElement
         if (!ValidBlocksPosition()) // Check if its not valid
         {
             // Move shape up
-            app.model.game.currentShape.transform.position += Vector3.up;
+            app.model.currentShape.transform.position += Vector3.up;
 
             ShapeColided();
         }
@@ -145,9 +159,9 @@ public class TetrisController : TetrisElement
         int maxHeightToCheck = 0;
         int minHeightToCheck = app.model.game.boardHeight;
 
-        for (int i = 0;i< app.model.game.currentShape.childCount; i++)
+        for (int i = 0;i< app.model.currentShape.childCount; i++)
         {
-            float yPos = app.model.game.currentShape.GetChild(i).position.y;
+            float yPos = app.model.currentShape.GetChild(i).position.y;
 
             if (yPos > maxHeightToCheck)
                 maxHeightToCheck = Mathf.FloorToInt(yPos);
@@ -203,11 +217,11 @@ public class TetrisController : TetrisElement
 
     private void MoveCurrentShape(Vector2 input)
     {
-        app.model.game.currentShape.transform.position +=
+        app.model.currentShape.transform.position +=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
 
         if(!ValidBlocksPosition())
-            app.model.game.currentShape.transform.position -=
+            app.model.currentShape.transform.position -=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
 
         // Update fall location indicator
@@ -215,12 +229,26 @@ public class TetrisController : TetrisElement
     }
     private void RotateCurrentShape(Vector3 actualAxis)
     {
-        app.model.game.currentShape.transform.Rotate(actualAxis, 90,Space.World);
+        app.model.currentShape.transform.Rotate(actualAxis, 90,Space.World);
         if (!ValidBlocksPosition())
-            app.model.game.currentShape.transform.Rotate(actualAxis, -90, Space.World);
+            app.model.currentShape.transform.Rotate(actualAxis, -90, Space.World);
 
         // Update fall location indicator
         _fallLocIndic.UpdateIndicator();
+    }
+
+    private Material GetCubeMat()
+    {
+        Material targetMat = app.model.game.availableFillMats
+        [Random.Range((int)0, (int)app.model.game.availableFillMats.Count)];
+
+        app.model.game.availableFillMats.Remove(targetMat);
+
+        if(app.model.game.availableFillMats.Count ==0)
+            app.model.game.availableFillMats =
+                app.model.game.cubeFillMats.ToList<Material>();
+
+        return targetMat;
     }
 
     private bool RowIsFull(int rowHeight)
@@ -235,7 +263,7 @@ public class TetrisController : TetrisElement
     }
     private bool AddCurrentShapeBlocksToGrid()
     {
-        foreach (Transform block in app.model.game.currentShape)
+        foreach (Transform block in app.model.currentShape)
         {
             int x = (int)block.transform.position.x;
             int y = (int)block.transform.position.y;
@@ -253,7 +281,7 @@ public class TetrisController : TetrisElement
         // Validate if current shape blocks positions are allowed
 
         // Itertae
-        foreach (Transform block in app.model.game.currentShape)
+        foreach (Transform block in app.model.currentShape)
         {
             int roundX = Mathf.FloorToInt(block.position.x);
             int roundY = Mathf.FloorToInt(block.position.y);

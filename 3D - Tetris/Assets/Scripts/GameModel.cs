@@ -6,10 +6,6 @@ using UnityEngine;
 [System.Serializable]
 public class GameModel
 {
-    public Transform currentShape;
-    public Transform shapesParent;
-    public Transform fallLocationCubesParent;
-
     public Transform[,,] grid;
 
     public float timeBetweenUpdates = 5;
@@ -19,6 +15,13 @@ public class GameModel
 
     [HideInInspector] public GameObject cubePrefab;
     [HideInInspector] public GameObject fallIndicatorCubePrefab;
+
+    public Color[] colors;
+    [HideInInspector] public Material[] cubeFillMats;
+    [HideInInspector] public List<Material> availableFillMats;
+    [HideInInspector] public Material cubeSquaresMatt;
+
+    [HideInInspector] public Material fallIndicatorMat;
 
     public Dictionary<string, ShapeModel> LoadShapes()
     {
@@ -67,5 +70,19 @@ public class GameModel
         }
 
         return parsedData;
+    }
+
+    public void CreateCubeMats()
+    {
+        Material referenceMat =
+            cubePrefab.GetComponent<MeshRenderer>().sharedMaterials[1];
+
+        cubeFillMats = new Material[colors.Length];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            cubeFillMats[i] = new Material(referenceMat);
+            cubeFillMats[i].color = colors[i];
+            cubeFillMats[i].name += i.ToString();
+        }
     }
 }

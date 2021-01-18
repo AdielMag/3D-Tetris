@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class FallLocationIndicatorController : TetrisElement
 {
-    private Transform _cubesParent { get { return app.model.game.fallLocationCubesParent; } }
+    private Transform _cubesParent { get { return app.model.fallLocationCubesParent; } }
+
+    private float _alphaValue;
 
     public void Init()
     {
         InstantiateCubes();
+
+        _alphaValue = _cubesParent.GetChild(0)
+            .GetComponent<MeshRenderer>().sharedMaterials[1].color.a;
     }
 
     private void InstantiateCubes()
@@ -27,14 +32,15 @@ public class FallLocationIndicatorController : TetrisElement
 
         // Create the max amount of cubes that the game will need
         for (int i = 0; i < maxCubeCountInShapes; i++)
-            Instantiate(app.model.game.fallIndicatorCubePrefab, _cubesParent);
+            Instantiate(app.model.game.fallIndicatorCubePrefab, _cubesParent)
+                .GetComponent<MeshRenderer>().sharedMaterials[1]= app.model.game.fallIndicatorMat;
     }
 
     public void SetNewIndicator() 
     {
         for (int i = 0; i < _cubesParent.childCount; i++)
         {
-            bool activeState = i < app.model.game.currentShape.childCount;
+            bool activeState = i < app.model.currentShape.childCount;
             _cubesParent.GetChild(i).gameObject.SetActive(activeState);
         }
     }
@@ -42,16 +48,25 @@ public class FallLocationIndicatorController : TetrisElement
     public void UpdateIndicator()
     {
         UpdateBlocksPositions();
+        UpdateColor();
     }
 
-    private void UpdateColor() { }
+    private void UpdateColor() 
+    { 
+        Color targetColor;
+
+        targetColor.a = _alphaValue;
+
+        app.model.game.fallIndicatorMat.color = targetColor;
+    }
+
     private void UpdateBlocksPositions()
     {
         // Set the maximum distance from floor
         float minDisFrmFlr = app.model.game.boardHeight;
 
         // Iterate thorugh all cubes y pos to check whose the closest to the floor
-        foreach (Transform cube in app.model.game.currentShape)
+        foreach (Transform cube in app.model.currentShape)
         {
             float targetY = cube.position.y;
 
@@ -79,10 +94,10 @@ public class FallLocationIndicatorController : TetrisElement
             minDisFrmFlr -= .5f;
 
         // Set indicator cubes positions
-        for (int i=0;i< app.model.game.currentShape.childCount;i++)
+        for (int i=0;i< app.model.currentShape.childCount;i++)
         {
             Vector3 indicatorCubeTargetPos =
-                app.model.game.currentShape.GetChild(i).position - Vector3.up * minDisFrmFlr;
+                app.model.currentShape.GetChild(i).position - Vector3.up * minDisFrmFlr;
 
             _cubesParent.GetChild(i).position = indicatorCubeTargetPos;
         }
