@@ -27,6 +27,8 @@ public class TetrisView : TetrisElement
     {
         startWindow.Disable();
 
+        inGameWindow.gameObject.SetActive(true);
+
         app.controller.StartGame();
     }
     public void PressBackToMenu()
