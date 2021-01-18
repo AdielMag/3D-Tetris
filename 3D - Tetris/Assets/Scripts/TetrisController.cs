@@ -265,9 +265,9 @@ public class TetrisController : TetrisElement
     {
         foreach (Transform block in app.model.currentShape)
         {
-            int x = (int)block.transform.position.x;
-            int y = (int)block.transform.position.y;
-            int z = (int)block.transform.position.z;
+            int x = Mathf.FloorToInt(block.transform.position.x);
+            int y = Mathf.FloorToInt(block.transform.position.y);
+            int z = Mathf.FloorToInt(block.transform.position.z);
 
             if (y >= app.model.game.boardHeight)
                 return true;

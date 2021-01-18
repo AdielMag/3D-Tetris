@@ -55,6 +55,10 @@ public class FallLocationIndicatorController : TetrisElement
     { 
         Color targetColor;
 
+        targetColor = 
+            app.model.currentShape.GetChild(0)
+            .GetComponent<MeshRenderer>().materials[1].color;
+
         targetColor.a = _alphaValue;
 
         app.model.game.fallIndicatorMat.color = targetColor;
