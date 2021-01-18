@@ -5,7 +5,24 @@ using UnityEngine;
 public class TetrisController : TetrisElement
 {
     public  CameraController cam;
+
     private FallLocationIndicatorController _fallLocIndic;
+
+    // MonoBehaviour functions
+    private float _previousUpdateTime;
+    private void Update()
+    {
+        float timeToWait = app.view.input.fallFaster ?
+            app.model.game.timeBetweenUpdates / 10 : app.model.game.timeBetweenUpdates;
+
+        if (Time.time - _previousUpdateTime > timeToWait)
+        {
+            _previousUpdateTime = Time.time;
+            UpdateGame();
+        }
+    }
+
+    // Public functions
     public void Init()
     {
         app.transform.position +=
@@ -21,21 +38,32 @@ public class TetrisController : TetrisElement
 
         CreateNewShape("L");
     }
-
-    private float _previousUpdateTime;
-    private void Update()
+    public void OnMovementInput(Vector2 input)
     {
-        float timeToWait = app.view.input.fallFaster ?
-            app.model.game.timeBetweenUpdates / 10 : app.model.game.timeBetweenUpdates;
-
-        if (Time.time - _previousUpdateTime > timeToWait)
+        MoveCurrentShape(input);
+    }
+    public void OnRotationInput(UserInput.RotationAxis axis)
+    {
+        Vector3 targetAxis;
+        switch (axis)
         {
-            _previousUpdateTime = Time.time;
-            UpdateGame();
+            default:
+                targetAxis = cam.SnappedRight;
+                break;
+            case UserInput.RotationAxis.Up:
+                targetAxis = -Vector3.up;
+                break;
+            case UserInput.RotationAxis.Forward:
+                targetAxis = -cam.SnappedForward;
+                break;
         }
+
+        RotateCurrentShape(targetAxis);
     }
 
-    public void CreateNewShape(string name)
+
+    // Private functions
+    private void CreateNewShape(string name)
     {
         // Create new shape
         Transform shape = new GameObject(name).transform;
@@ -66,7 +94,7 @@ public class TetrisController : TetrisElement
             initialStartingPos += Vector3.forward * .5f;
         if (app.model.game.boardDepth % 2 == 0)
             initialStartingPos -= Vector3.right * .5f;
-        if(app.model.game.boardHeight % 2 == 0)
+        if (app.model.game.boardHeight % 2 == 0)
             initialStartingPos += Vector3.up * .5f;
 
         shape.transform.position = initialStartingPos;
@@ -94,53 +122,86 @@ public class TetrisController : TetrisElement
             // Move shape up
             app.model.game.currentShape.transform.position += Vector3.up;
 
-            AddCurrentShapeBlocksToGrid();
+            ShapeColided();
+        }
+    }
+    private void ShapeColided()
+    {
+        bool reachedTop = AddCurrentShapeBlocksToGrid();
+
+        if (reachedTop)
+            GameLost();
+        else
+        {
+            CheckForRows();
 
             // Create new shape
             CreateNewShape("L");
         }
     }
-
-    public void AddCurrentShapeBlocksToGrid()
+    
+    private void CheckForRows()
     {
-        foreach (Transform block in app.model.game.currentShape)
-        {
-            int x = (int)block.transform.position.x;
-            int y = (int)block.transform.position.y;
-            int z = (int)block.transform.position.z;
+        int maxHeightToCheck = 0;
+        int minHeightToCheck = app.model.game.boardHeight;
 
-            if (y > app.model.game.boardHeight)
+        for (int i = 0;i< app.model.game.currentShape.childCount; i++)
+        {
+            float yPos = app.model.game.currentShape.GetChild(i).position.y;
+
+            if (yPos > maxHeightToCheck)
+                maxHeightToCheck = Mathf.FloorToInt(yPos);
+
+            if(yPos< minHeightToCheck)
+                minHeightToCheck = Mathf.FloorToInt(yPos);
+        }
+
+        // Loop through max grid height to min (the shape cube max & min heights)
+        for (int height = maxHeightToCheck; height >= minHeightToCheck; height--)
+            if (RowIsFull(height))
             {
-                // Lost!
+                // Remove row
+                RemoveRow(height);
+                // Move top rows down
+                MoveRowsDown(height);
             }
-            else
-                app.model.game.grid[x, y, z] = block.transform;
-        }
+    }
+    private void RemoveRow(int rowHeight) 
+    {
+        for (int width = 0; width < app.model.game.boardWidth; width++)
+            for (int depth = 0; depth < app.model.game.boardDepth; depth++)
+            {
+                // Disable object - will remove all shpes when lost
+                // (dont delete now it will affect performance)
+                app.model.game.grid[width, rowHeight, depth].gameObject.SetActive(false);
+                app.model.game.grid[width, rowHeight, depth] = null;
+            }
+    }
+    private void MoveRowsDown(int minRow)
+    {
+        for (int height = minRow ; height < app.model.game.boardHeight; height++)
+            for (int width = 0; width < app.model.game.boardWidth; width++)
+                for (int depth = 0; depth < app.model.game.boardDepth; depth++)
+                {
+                    // Grab cube transform
+                    Transform cube = app.model.game.grid[width, height, depth];
+                    if (cube != null)
+                    {
+                        // Remove cube from array
+                        app.model.game.grid[width, height, depth] = null;
+
+                        // Place the cube one row below
+                        app.model.game.grid[width, height - 1, depth] = cube;
+
+                        // Move down the cube
+                        cube.position -= Vector3.up;
+                    }
+                }
     }
 
-    public void OnMovementInput(Vector2 input) 
-    {
-        MoveShape(input);
-    }
-    public void OnRotationInput(UserInput.RotationAxis axis) 
-    {
-        Vector3 targetAxis;
-        switch (axis)
-        {
-            default:
-                targetAxis = cam.SnappedRight;
-                break;
-            case UserInput.RotationAxis.Up:
-                targetAxis = -Vector3.up;
-                break;
-            case UserInput.RotationAxis.Forward:
-                targetAxis = -cam.SnappedForward;
-                break;
-        }
+    private void GameLost() { Debug.Log("Lost!"); }
 
-        RotateShape(targetAxis);
-    }
-    private void MoveShape(Vector2 input)
+    private void MoveCurrentShape(Vector2 input)
     {
         app.model.game.currentShape.transform.position +=
             cam.SnappedRight * input.x + cam.SnappedForward * input.y;
@@ -152,8 +213,7 @@ public class TetrisController : TetrisElement
         // Update fall location indicator
         _fallLocIndic.UpdateIndicator();
     }
-
-    private void RotateShape(Vector3 actualAxis)
+    private void RotateCurrentShape(Vector3 actualAxis)
     {
         app.model.game.currentShape.transform.Rotate(actualAxis, 90,Space.World);
         if (!ValidBlocksPosition())
@@ -162,10 +222,37 @@ public class TetrisController : TetrisElement
         // Update fall location indicator
         _fallLocIndic.UpdateIndicator();
     }
-    
-    // Validate if current shape blocks positions are allowed
-    bool ValidBlocksPosition() 
+
+    private bool RowIsFull(int rowHeight)
     {
+        // Loop thourgh entire row and check if has empty variable
+        for (int width = 0; width < app.model.game.boardWidth; width++)
+            for (int depth = 0; depth < app.model.game.boardDepth; depth++)
+                if (app.model.game.grid[width, rowHeight, depth] == null)
+                    return false;
+
+        return true;
+    }
+    private bool AddCurrentShapeBlocksToGrid()
+    {
+        foreach (Transform block in app.model.game.currentShape)
+        {
+            int x = (int)block.transform.position.x;
+            int y = (int)block.transform.position.y;
+            int z = (int)block.transform.position.z;
+
+            if (y >= app.model.game.boardHeight)
+                return true;
+            else // Not necessary but helps readability
+                app.model.game.grid[x, y, z] = block.transform;
+        }
+        return false;
+    }
+    private bool ValidBlocksPosition() 
+    {
+        // Validate if current shape blocks positions are allowed
+
+        // Itertae
         foreach (Transform block in app.model.game.currentShape)
         {
             int roundX = Mathf.FloorToInt(block.position.x);

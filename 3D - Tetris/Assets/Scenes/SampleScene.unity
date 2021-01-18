@@ -519,7 +519,7 @@ MonoBehaviour:
     timeBetweenUpdates: 1
     boardWidth: 7
     boardDepth: 7
-    boardHeight: 8
+    boardHeight: 10
     cubePrefab: {fileID: 0}
     fallIndicatorCubePrefab: {fileID: 0}
   cam:
@@ -530,22 +530,22 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.005666215
-        value: 1.3028017
-        inSlope: -0.15286115
-        outSlope: -0.15286115
+        time: 0
+        value: 1
+        inSlope: 0.59426373
+        outSlope: 0.59426373
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.22500004
+        outWeight: 0.09166667
       - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: -0.41272238
-        outSlope: -0.41272238
+        time: 0.9958191
+        value: 1.2004776
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.083333306
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -627,7 +627,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -12}
+  m_LocalPosition: {x: 0, y: 0, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1592054901}
@@ -707,7 +707,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592054900}
   m_LocalRotation: {x: 0.12862252, y: 0, z: 0, w: 0.9916936}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}

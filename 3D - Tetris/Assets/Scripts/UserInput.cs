@@ -8,6 +8,7 @@ public class UserInput : TetrisElement
 
     public bool fallFaster;
 
+    // Public functions
     public void HandleInput()
     {
         // Camera
@@ -41,15 +42,8 @@ public class UserInput : TetrisElement
 
     }
 
-    Vector2 MovementInput()
-    {
-        float x = Mathf.Clamp(Mathf.Ceil(Input.GetAxisRaw("Horizontal")), -1, 1);
-        float y = Mathf.Clamp(Mathf.Ceil(Input.GetAxisRaw("Vertical")), -1, 1);
-
-        return new Vector2(x, y);
-    }
-
-    Vector2 CameraRotationInput()
+    // Private functions
+    private Vector2 CameraRotationInput()
     {
         float x = Input.GetAxis("Mouse X");
         float y = Input.GetAxis("Mouse Y");

@@ -7,6 +7,7 @@ public class TetrisModel : TetrisElement
     public GameModel game;
     public CameraModel cam;
 
+    // Public functions
     public void Init()
     {
         cam.camParent = Camera.main.transform.parent;
