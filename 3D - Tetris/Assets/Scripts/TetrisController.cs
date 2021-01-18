@@ -37,14 +37,30 @@ public class TetrisController : TetrisElement
         _fallLocIndic = GetComponentInChildren<FallLocationIndicatorController>();
         _fallLocIndic.Init();
 
+        enabled = false;
+    }
+    public void StartGame()
+    {
+        // Remove all shapes inside the grid
+        for (int i = app.model.shapesParent.childCount - 1; i >= 0; i--)
+            Destroy(app.model.shapesParent.GetChild(i).gameObject);
+
         CreateNewShape("L");
+
+        enabled = true;
     }
     public void OnMovementInput(Vector2 input)
     {
+        if (!enabled)
+            return;
+
         MoveCurrentShape(input);
     }
     public void OnRotationInput(UserInput.RotationAxis axis)
     {
+        if (!enabled)
+            return;
+
         Vector3 targetAxis;
         switch (axis)
         {
@@ -213,7 +229,16 @@ public class TetrisController : TetrisElement
                 }
     }
 
-    private void GameLost() { Debug.Log("Lost!"); }
+    private void GameLost() 
+    {
+        enabled = false;
+
+        app.view.inGameWindow.Disable();
+
+        app.view.lostWindow.gameObject.SetActive(true);
+
+        _fallLocIndic.HideIndicatorCubes();
+    }
 
     private void MoveCurrentShape(Vector2 input)
     {

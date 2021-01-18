@@ -8,6 +8,7 @@ public class FallLocationIndicatorController : TetrisElement
 
     private float _alphaValue;
 
+    // Public functions
     public void Init()
     {
         InstantiateCubes();
@@ -15,7 +16,27 @@ public class FallLocationIndicatorController : TetrisElement
         _alphaValue = _cubesParent.GetChild(0)
             .GetComponent<MeshRenderer>().sharedMaterials[1].color.a;
     }
+    public void SetNewIndicator()
+    {
+        app.model.fallLocationCubesParent.gameObject.SetActive(true);
 
+        for (int i = 0; i < _cubesParent.childCount; i++)
+        {
+            bool activeState = i < app.model.currentShape.childCount;
+            _cubesParent.GetChild(i).gameObject.SetActive(activeState);
+        }
+    }
+    public void UpdateIndicator()
+    {
+        UpdateBlocksPositions();
+        UpdateColor();
+    }
+    public void HideIndicatorCubes()
+    {
+        app.model.fallLocationCubesParent.gameObject.SetActive(false);
+    }
+
+    // Private functions
     private void InstantiateCubes()
     {
         int maxCubeCountInShapes = 0;
@@ -32,25 +53,16 @@ public class FallLocationIndicatorController : TetrisElement
 
         // Create the max amount of cubes that the game will need
         for (int i = 0; i < maxCubeCountInShapes; i++)
-            Instantiate(app.model.game.fallIndicatorCubePrefab, _cubesParent)
-                .GetComponent<MeshRenderer>().sharedMaterials[1]= app.model.game.fallIndicatorMat;
-    }
-
-    public void SetNewIndicator() 
-    {
-        for (int i = 0; i < _cubesParent.childCount; i++)
         {
-            bool activeState = i < app.model.currentShape.childCount;
-            _cubesParent.GetChild(i).gameObject.SetActive(activeState);
+            GameObject cube =
+                Instantiate(app.model.game.fallIndicatorCubePrefab, _cubesParent);
+
+            cube.GetComponent<MeshRenderer>()
+                .sharedMaterials[1] = app.model.game.fallIndicatorMat;
         }
-    }
 
-    public void UpdateIndicator()
-    {
-        UpdateBlocksPositions();
-        UpdateColor();
+        HideIndicatorCubes();
     }
-
     private void UpdateColor() 
     { 
         Color targetColor;
@@ -63,7 +75,6 @@ public class FallLocationIndicatorController : TetrisElement
 
         app.model.game.fallIndicatorMat.color = targetColor;
     }
-
     private void UpdateBlocksPositions()
     {
         // Set the maximum distance from floor
@@ -106,8 +117,7 @@ public class FallLocationIndicatorController : TetrisElement
             _cubesParent.GetChild(i).position = indicatorCubeTargetPos;
         }
     }
-
-    bool Valid(Vector3 blockPos)
+    private bool Valid(Vector3 blockPos)
     {
         int roundX = Mathf.FloorToInt(blockPos.x);
         int roundY = Mathf.FloorToInt(blockPos.y);

@@ -22,4 +22,9 @@ public class TetrisApplication : MonoBehaviour
         view.Init();
         controller.Init();
     }
+
+    public void ExitApplication()
+    {
+        Application.Quit();
+    }
 }
