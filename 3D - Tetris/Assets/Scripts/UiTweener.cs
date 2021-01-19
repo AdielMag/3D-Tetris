@@ -67,7 +67,10 @@ public class UiTweener : MonoBehaviour
 
     public void Show()
     {
-        HandleTween();
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+        else if (_tweenObj == null || !_tweenObj.IsPlaying())
+            HandleTween();
     }
 
     private void HandleTween()
@@ -153,6 +156,9 @@ public class UiTweener : MonoBehaviour
 
     public void Disable()
     {
+        if (_tweenObj.IsPlaying())
+            return;
+
         SwapDirection();
 
         HandleTween();

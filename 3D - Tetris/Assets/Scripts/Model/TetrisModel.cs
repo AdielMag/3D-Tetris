@@ -1,17 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class TetrisModel : TetrisElement
 {
     [HideInInspector] public Transform currentShape;
+    [HideInInspector] public List<Score> highScores;
+
+
+    public int score;
 
     public Transform shapesParent;
     public Transform fallLocationCubesParent;
+    public Transform shapePreviewParent;
 
     public GameModel game;
     public CameraModel cam;
+    public UIModel ui;
 
     // Public functions
     public void Init()
@@ -19,7 +24,8 @@ public class TetrisModel : TetrisElement
         cam.camParent = Camera.main.transform.parent;
 
         // Load data
-        game.shapes = game.LoadShapes();
+        //game.shapes = Data.LoadShapes();
+        game.SetAvailableShapes();
         game.cubePrefab = Resources.Load<GameObject>("Prefabs/CubePrefab");
         game.fallIndicatorCubePrefab =
             Resources.Load<GameObject>("Prefabs/FallIndicatorCubePrefab");
@@ -30,9 +36,16 @@ public class TetrisModel : TetrisElement
 
         game.cubeSquaresMatt =
             game.cubePrefab.GetComponent<MeshRenderer>().sharedMaterials[0];
-        game.availableFillMats = game.cubeFillMats.ToList<Material>();
+        game.SetAvailableFillmats();
 
         game.fallIndicatorMat = game.fallIndicatorCubePrefab
             .GetComponent<MeshRenderer>().sharedMaterials[1];
     }
+}
+
+[System.Serializable]
+public struct Score
+{
+    public string name;
+    public int score;
 }

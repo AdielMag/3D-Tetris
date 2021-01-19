@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UserInput : TetrisElement
+public class UserInputView : TetrisElement
 {
     public enum RotationAxis { Right, Up, Forward }
 
-    public bool fallFaster;
+    [HideInInspector] public bool fallFaster;
 
     // Public functions
     public void HandleInput()

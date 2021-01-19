@@ -25,6 +25,8 @@ public class FallLocationIndicatorController : TetrisElement
             bool activeState = i < app.model.currentShape.childCount;
             _cubesParent.GetChild(i).gameObject.SetActive(activeState);
         }
+
+        UpdateIndicator();
     }
     public void UpdateIndicator()
     {
@@ -42,9 +44,9 @@ public class FallLocationIndicatorController : TetrisElement
         int maxCubeCountInShapes = 0;
 
         // Iterate through all shapes and check thier block count
-        foreach (KeyValuePair<string, ShapeModel> shape in app.model.game.shapes)
+        foreach (ShapeModel shape in app.model.game.availableShapes)
         {
-            int shapeBlockCount = shape.Value.blocksPositions.Length;
+            int shapeBlockCount = shape.blocksPositions.Length;
 
             // Check if block count is bigger than current max block count
             if (shapeBlockCount > maxCubeCountInShapes)

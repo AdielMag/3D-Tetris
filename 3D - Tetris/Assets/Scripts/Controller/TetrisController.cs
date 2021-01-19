@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
 
 public class TetrisController : TetrisElement
 {
@@ -45,7 +46,14 @@ public class TetrisController : TetrisElement
         for (int i = app.model.shapesParent.childCount - 1; i >= 0; i--)
             Destroy(app.model.shapesParent.GetChild(i).gameObject);
 
-        CreateNewShape("L");
+
+        // Reset score
+        UpdateScore(0);
+
+
+        SetCurrrentShape(NewShape());
+
+        CreateNextShapePreview();
 
         enabled = true;
     }
@@ -56,7 +64,7 @@ public class TetrisController : TetrisElement
 
         MoveCurrentShape(input);
     }
-    public void OnRotationInput(UserInput.RotationAxis axis)
+    public void OnRotationInput(UserInputView.RotationAxis axis)
     {
         if (!enabled)
             return;
@@ -67,10 +75,10 @@ public class TetrisController : TetrisElement
             default:
                 targetAxis = cam.SnappedRight;
                 break;
-            case UserInput.RotationAxis.Up:
+            case UserInputView.RotationAxis.Up:
                 targetAxis = -Vector3.up;
                 break;
-            case UserInput.RotationAxis.Forward:
+            case UserInputView.RotationAxis.Forward:
                 targetAxis = -cam.SnappedForward;
                 break;
         }
@@ -78,35 +86,29 @@ public class TetrisController : TetrisElement
         RotateCurrentShape(targetAxis);
     }
 
-
-    // Private functions
-    private void CreateNewShape(string name)
+    public void RegisterHighScore(string _name, int _score)
     {
-        // Create new shape
-        Transform shape = new GameObject(name).transform;
+        int scoresCount =
+            app.model.highScores.Count > 0 ? app.model.highScores.Count : 1;
 
-        // Get shape data
-        ShapeModel shapeData = app.model.game.shapes[name];
+        // Check if the highScores list is empty
+        if (app.model.highScores.Count == 0)
+            app.model.highScores.Add(new Score { name = _name, score = _score });
+        else
+            for (int i = 0; i < scoresCount; i++)
+                if (_score > app.model.highScores[i].score)
+                    app.model.highScores.Insert(i,
+                        new Score { name = _name, score = _score });
+    }
 
-        Material targetMat = GetCubeMat();
+    // Private function
+    private void SetCurrrentShape(Transform shape)
+    {
+        // Set shape parent
+        shape.transform.SetParent(app.model.shapesParent, true);
 
-        // Create cubes & set color
-        for (int i = 0; i < shapeData.blocksPositions.Length; i++)
-        {
-            // Create cube
-            Transform cube = 
-                Instantiate(app.model.game.cubePrefab, shape.transform).transform;
-
-            // Place cube based on data
-            cube.localPosition = shapeData.blocksPositions[i];
-
-            Material[] mats = new Material[2];
-
-            mats[0] = app.model.game.cubeSquaresMatt;
-            mats[1] = targetMat;
-
-            cube.GetComponent<MeshRenderer>().materials = mats;
-        }
+        // Reset Rotation
+        shape.localRotation = Quaternion.Euler(Vector3.zero);
 
         #region Set shape pos
         Vector3 initialStartingPos;
@@ -128,9 +130,6 @@ public class TetrisController : TetrisElement
         shape.transform.position = initialStartingPos;
         #endregion
 
-        // Set shape parent
-        shape.transform.SetParent(app.model.shapesParent, true);
-
         app.model.currentShape = shape;
 
         // Set new indicator
@@ -138,7 +137,6 @@ public class TetrisController : TetrisElement
         // Update fall location indicator
         _fallLocIndic.UpdateIndicator();
     }
-
     private void UpdateGame() 
     {
         // Move shape down
@@ -165,8 +163,9 @@ public class TetrisController : TetrisElement
         {
             CheckForRows();
 
-            // Create new shape
-            CreateNewShape("L");
+            SetCurrrentShape(app.model.shapePreviewParent.GetChild(0));
+
+            CreateNextShapePreview();
         }
     }
     
@@ -191,21 +190,26 @@ public class TetrisController : TetrisElement
             if (RowIsFull(height))
             {
                 // Remove row
-                RemoveRow(height);
+                ClearRow(height);
                 // Move top rows down
                 MoveRowsDown(height);
             }
     }
-    private void RemoveRow(int rowHeight) 
+    private void ClearRow(int rowHeight) 
     {
-        for (int width = 0; width < app.model.game.boardWidth; width++)
-            for (int depth = 0; depth < app.model.game.boardDepth; depth++)
+        int boardWidth = app.model.game.boardWidth;
+        int boardDepth = app.model.game.boardDepth;
+
+        for (int width = 0; width < boardWidth; width++)
+            for (int depth = 0; depth < boardDepth; depth++)
             {
                 // Disable object - will remove all shpes when lost
                 // (dont delete now it will affect performance)
                 app.model.game.grid[width, rowHeight, depth].gameObject.SetActive(false);
                 app.model.game.grid[width, rowHeight, depth] = null;
             }
+
+        UpdateScore(app.model.score + (boardWidth * boardDepth));
     }
     private void MoveRowsDown(int minRow)
     {
@@ -233,11 +237,20 @@ public class TetrisController : TetrisElement
     {
         enabled = false;
 
-        app.view.inGameWindow.Disable();
+        app.model.ui.inGameWindow.Disable();
 
-        app.view.lostWindow.gameObject.SetActive(true);
+        app.model.ui.lostWindow.gameObject.SetActive(true);
+
+        app.model.ui.lostScore.text = app.model.score.ToString();
 
         _fallLocIndic.HideIndicatorCubes();
+    }
+
+    private void UpdateScore(int value)
+    {
+        app.model.score = value;
+
+        app.model.ui.inGameScore.text = "Score: " + value.ToString();
     }
 
     private void MoveCurrentShape(Vector2 input)
@@ -262,6 +275,47 @@ public class TetrisController : TetrisElement
         _fallLocIndic.UpdateIndicator();
     }
 
+    private void CreateNextShapePreview()
+    {
+        Transform nextShape = NewShape();
+
+        nextShape.SetParent(app.model.shapePreviewParent);
+
+        nextShape.localPosition = Vector3.zero;
+    }
+
+    private Transform NewShape()
+    {
+        int shapeNum = Random.Range(0, app.model.game.availableShapes.Count);
+
+        ShapeModel shapeData = app.model.game.availableShapes[shapeNum];
+
+        // Create new transform
+        Transform shape = new GameObject(shapeData.name).transform;
+
+        Material targetMat = GetCubeMat();
+
+        // Create cubes & set color
+        for (int i = 0; i < shapeData.blocksPositions.Length; i++)
+        {
+            // Create cube
+            Transform cube =
+                Instantiate(app.model.game.cubePrefab, shape.transform).transform;
+
+            // Place cube based on data
+            cube.localPosition = shapeData.blocksPositions[i];
+
+            Material[] mats = new Material[2];
+
+            mats[0] = app.model.game.cubeSquaresMatt;
+            mats[1] = targetMat;
+
+            cube.GetComponent<MeshRenderer>().materials = mats;
+        }
+
+        return shape;
+    }
+
     private Material GetCubeMat()
     {
         Material targetMat = app.model.game.availableFillMats
@@ -269,9 +323,8 @@ public class TetrisController : TetrisElement
 
         app.model.game.availableFillMats.Remove(targetMat);
 
-        if(app.model.game.availableFillMats.Count ==0)
-            app.model.game.availableFillMats =
-                app.model.game.cubeFillMats.ToList<Material>();
+        if (app.model.game.availableFillMats.Count == 0)
+                app.model.game.SetAvailableFillmats();
 
         return targetMat;
     }
