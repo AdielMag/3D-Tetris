@@ -667,7 +667,7 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 1, g: 0.97016233, b: 0.9198113, a: 1}
-  m_Intensity: 1.2
+  m_Intensity: 0.8
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -886,7 +886,7 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 1, g: 0.97016233, b: 0.9198113, a: 1}
-  m_Intensity: 1.2
+  m_Intensity: 0.8
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2142,8 +2142,8 @@ MonoBehaviour:
   shapePreviewParent: {fileID: 472663858}
   game:
     timeBetweenUpdates: 1
-    boardWidth: 2
-    boardDepth: 2
+    boardWidth: 7
+    boardDepth: 7
     boardHeight: 10
     shapes:
     - name: I
@@ -2159,49 +2159,49 @@ MonoBehaviour:
       - {x: 0, y: 1, z: 0}
       - {x: 1, y: 0, z: 0}
       - {x: -1, y: 0, z: 0}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: L
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: 0, y: 1, z: 0}
       - {x: 0, y: -1, z: 0}
       - {x: 1, y: -1, z: 0}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: S
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: 0, y: -1, z: 0}
       - {x: -1, y: 0, z: 0}
       - {x: -1, y: 1, z: 0}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: SnakeR
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: 1, y: 0, z: 0}
       - {x: 0, y: 0, z: 1}
       - {x: 0, y: 1, z: 1}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: SnakeL
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: -1, y: 0, z: 0}
       - {x: 0, y: 0, z: 1}
       - {x: 0, y: 1, z: 1}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: Corner
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: 0, y: -1, z: 0}
       - {x: 0, y: -1, z: -1}
       - {x: 1, y: -1, z: 0}
-      appearanceOdds: 0
+      appearanceOdds: 1
     - name: O
       blocksPositions:
       - {x: 0, y: 0, z: 0}
       - {x: 1, y: 0, z: 0}
       - {x: 0, y: -1, z: 0}
       - {x: 1, y: -1, z: 0}
-      appearanceOdds: 0
+      appearanceOdds: 1
     colors:
     - {r: 1, g: 0.31764707, b: 0, a: 1}
     - {r: 1, g: 0, b: 0.76862746, a: 1}

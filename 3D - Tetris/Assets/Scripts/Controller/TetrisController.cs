@@ -26,10 +26,19 @@ public class TetrisController : TetrisElement
     // Public functions
     public void Init()
     {
+        // Add offset to the board if it's even
+        float boardXOffset =
+            app.model.game.boardWidth % 2 != 0 ? 0 : -.5f;
+        float boardZOffset =
+            app.model.game.boardDepth % 2 != 0 ? 0 : -.5f;
+        float boardYOffset =
+            app.model.game.boardHeight % 2 != 0 ? 0 : -.5f;
+
+
         app.transform.position +=
-            Vector3.forward * (app.model.game.boardWidth / 2)
-            + Vector3.right * (app.model.game.boardDepth / 2)
-            + Vector3.up * (app.model.game.boardHeight / 2);
+            Vector3.forward * ((app.model.game.boardWidth / 2) + boardXOffset)
+            + Vector3.right * ((app.model.game.boardDepth / 2) + boardZOffset)
+            + Vector3.up * ((app.model.game.boardHeight / 2) + boardYOffset);
 
         cam = GetComponentInChildren<CameraController>();
         cam.Init();
@@ -136,14 +145,6 @@ public class TetrisController : TetrisElement
             app.model.game.boardWidth / 2,
             app.model.game.boardHeight,
             app.model.game.boardDepth / 2);
-
-        // Check if the board dimensions are even
-        if (app.model.game.boardWidth % 2 == 0)
-            initialStartingPos += Vector3.forward * .5f;
-        if (app.model.game.boardDepth % 2 == 0)
-            initialStartingPos -= Vector3.right * .5f;
-        if (app.model.game.boardHeight % 2 == 0)
-            initialStartingPos += Vector3.up * .5f;
 
         shape.transform.position = initialStartingPos;
         #endregion
@@ -361,9 +362,9 @@ public class TetrisController : TetrisElement
     {
         foreach (Transform block in app.model.currentShape)
         {
-            int x = Mathf.FloorToInt(block.transform.position.x);
-            int y = Mathf.FloorToInt(block.transform.position.y);
-            int z = Mathf.FloorToInt(block.transform.position.z);
+            int x = Mathf.RoundToInt(block.transform.position.x);
+            int y = Mathf.RoundToInt(block.transform.position.y);
+            int z = Mathf.RoundToInt(block.transform.position.z);
 
             if (y >= app.model.game.boardHeight)
                 return true;
@@ -379,9 +380,9 @@ public class TetrisController : TetrisElement
         // Itertae
         foreach (Transform block in app.model.currentShape)
         {
-            int roundX = Mathf.FloorToInt(block.position.x);
-            int roundY = Mathf.FloorToInt(block.position.y);
-            int roundZ = Mathf.FloorToInt(block.position.z);
+            int roundX = Mathf.RoundToInt(block.position.x);
+            int roundY = Mathf.RoundToInt(block.position.y);
+            int roundZ = Mathf.RoundToInt(block.position.z);
 
             // Check if its withing width dimensions
             if (roundX >= app.model.game.boardWidth || roundX < 0)

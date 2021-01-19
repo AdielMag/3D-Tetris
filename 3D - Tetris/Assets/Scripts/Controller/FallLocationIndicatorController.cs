@@ -102,14 +102,6 @@ public class FallLocationIndicatorController : TetrisElement
                 minDisFrmFlr = targetY;
         }
 
-        // Check if has blocks that prevent the shape from going down
-        // and update the indicator accordingly
-
-
-        // Add offset if boardHeigt is even
-        if (app.model.game.boardHeight % 2 == 0)
-            minDisFrmFlr -= .5f;
-
         // Set indicator cubes positions
         for (int i=0;i< app.model.currentShape.childCount;i++)
         {
@@ -121,17 +113,16 @@ public class FallLocationIndicatorController : TetrisElement
     }
     private bool Valid(Vector3 blockPos)
     {
-        int roundX = Mathf.FloorToInt(blockPos.x);
-        int roundY = Mathf.FloorToInt(blockPos.y);
-        int roundZ = Mathf.FloorToInt(blockPos.z);
+        int roundX = Mathf.RoundToInt(blockPos.x);
+        int roundY = Mathf.RoundToInt(blockPos.y);
+        int roundZ = Mathf.RoundToInt(blockPos.z);
 
         // Check if block is inside the grid
         // (When you create shapes there are some blocks that are a bit higher than the grid)
-        if (roundY < app.model.game.boardHeight && roundY >= 0)
+        if (roundY < app.model.game.boardHeight && roundY > -1)
             // Check if block position is free
             if (app.model.game.grid[roundX, roundY, roundZ] != null)
                 return false;
-
 
         return true;
     }
