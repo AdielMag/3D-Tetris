@@ -12,6 +12,8 @@ public class UIModel
     public UiTweener lostWindow;
     public UiTweener inGameWindow;
 
+    public Transform highScoresParent;
+
     public Text inGameScore;
     public Text lostScore;
 }

@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using DG.Tweening;
+using UnityEngine.UI;
 
 public class TetrisController : TetrisElement
 {
@@ -47,9 +46,12 @@ public class TetrisController : TetrisElement
             Destroy(app.model.shapesParent.GetChild(i).gameObject);
 
 
+        // Remove shape on preview if has one
+        if (app.model.shapePreviewParent.childCount > 0)
+            Destroy(app.model.shapePreviewParent.GetChild(0).gameObject);
+
         // Reset score
         UpdateScore(0);
-
 
         SetCurrrentShape(NewShape());
 
@@ -99,6 +101,22 @@ public class TetrisController : TetrisElement
                 if (_score > app.model.highScores[i].score)
                     app.model.highScores.Insert(i,
                         new Score { name = _name, score = _score });
+
+        // Update high scores window
+        for (int i = 0; i < app.model.highScores.Count; i++)
+        {
+            string target;
+
+            target = "- " + app.model.highScores[i].name
+                + ": " + app.model.highScores[i].score;
+
+            Text highScoreTxt =
+                app.model.ui.highScoresParent.GetChild(i).GetComponent<Text>();
+
+            highScoreTxt.gameObject.SetActive(true);
+
+            highScoreTxt.text = target;
+        }
     }
 
     // Private function
@@ -241,7 +259,7 @@ public class TetrisController : TetrisElement
 
         app.model.ui.lostWindow.gameObject.SetActive(true);
 
-        app.model.ui.lostScore.text = app.model.score.ToString();
+        app.model.ui.lostScore.text = "Score: " + app.model.score.ToString();
 
         _fallLocIndic.HideIndicatorCubes();
     }
