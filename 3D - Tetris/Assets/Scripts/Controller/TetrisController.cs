@@ -116,13 +116,11 @@ public class TetrisController : TetrisElement
         {
             string target;
 
-            target = "- " + app.model.highScores[i].name
+            target = (i + 1).ToString() + ". " + app.model.highScores[i].name
                 + ": " + app.model.highScores[i].score;
 
             Text highScoreTxt =
                 app.model.ui.highScoresParent.GetChild(i).GetComponent<Text>();
-
-            highScoreTxt.gameObject.SetActive(true);
 
             highScoreTxt.text = target;
         }
