@@ -198,10 +198,10 @@ public class TetrisController : TetrisElement
             float yPos = app.model.currentShape.GetChild(i).position.y;
 
             if (yPos > maxHeightToCheck)
-                maxHeightToCheck = Mathf.FloorToInt(yPos);
+                maxHeightToCheck = Mathf.RoundToInt(yPos);
 
             if(yPos< minHeightToCheck)
-                minHeightToCheck = Mathf.FloorToInt(yPos);
+                minHeightToCheck = Mathf.RoundToInt(yPos);
         }
 
         // Loop through max grid height to min (the shape cube max & min heights)
