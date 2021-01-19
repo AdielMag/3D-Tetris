@@ -258,7 +258,7 @@ public class TetrisController : TetrisElement
 
         app.model.ui.inGameWindow.Disable();
 
-        app.model.ui.lostWindow.gameObject.SetActive(true);
+        app.model.ui.scoreWindow.gameObject.SetActive(true);
 
         app.model.ui.lostScore.text = "Score: " + app.model.score.ToString();
 

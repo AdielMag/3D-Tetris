@@ -9,8 +9,9 @@ public class UIModel
 {
     public UiTweener startWindow;
     public UiTweener highScoresWindow;
-    public UiTweener lostWindow;
+    public UiTweener scoreWindow;
     public UiTweener inGameWindow;
+    public UiTweener pauseWindow;
 
     public Transform highScoresParent;
 

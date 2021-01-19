@@ -28,7 +28,9 @@ public class TetrisView : TetrisElement
     }
     public void PressBackToMenu()
     {
-        app.model.ui.lostWindow.Disable();
+        app.model.ui.inGameWindow.Disable();
+        app.model.ui.scoreWindow.Disable();
+        app.model.ui.pauseWindow.Disable();
 
         app.model.ui.startWindow.Show();
     }
@@ -36,12 +38,22 @@ public class TetrisView : TetrisElement
     {
         app.ExitApplication();
     }
+    public void PressPause()
+    {
+        app.controller.enabled = false;
+        app.model.ui.pauseWindow.Show();
+    }
+    public void PressUnpause()
+    {
+        app.controller.enabled = true;
+        app.model.ui.pauseWindow.Disable();
+    }
     public void EnterScoreName(string name) 
     {
         app.controller.RegisterHighScore(name, app.model.score);
 
         app.model.ui.highScoresWindow.Show();
 
-        app.model.ui.lostWindow.Disable();
+        app.model.ui.scoreWindow.Disable();
     }
 }

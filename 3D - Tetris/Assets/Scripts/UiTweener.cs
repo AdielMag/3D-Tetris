@@ -156,7 +156,7 @@ public class UiTweener : MonoBehaviour
 
     public void Disable()
     {
-        if (_tweenObj.IsPlaying())
+        if (_tweenObj == null || _tweenObj.IsPlaying())
             return;
 
         SwapDirection();
