@@ -960,7 +960,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 472663857}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 17}
+  m_LocalPosition: {x: 0.15, y: 0.25, z: 17.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 668433123}
@@ -2142,8 +2142,8 @@ MonoBehaviour:
   shapePreviewParent: {fileID: 472663858}
   game:
     timeBetweenUpdates: 1
-    boardWidth: 5
-    boardDepth: 5
+    boardWidth: 7
+    boardDepth: 7
     boardHeight: 10
     shapes:
     - name: I
