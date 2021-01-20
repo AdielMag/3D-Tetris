@@ -101,7 +101,7 @@ public class FallLocationIndicatorController : TetrisElement
             // the shape from falling to the floor and store
             // its y position to position the indicator in the right place
             for (int y = Mathf.FloorToInt(targetY); y > 0; y--)
-                if (!ValidPos(new Vector3(cube.position.x, y - 1, cube.position.z)))
+                if (!ValidBlocksPosition(new Vector3(cube.position.x, y - 1, cube.position.z)))
                 {
                     targetY -= y;
                     break;
@@ -121,7 +121,10 @@ public class FallLocationIndicatorController : TetrisElement
             _cubesParent.GetChild(i).position = indicatorCubeTargetPos;
         }
     }
-    private bool ValidPos(Vector3 blockPos)
+
+    // Used to check if indicator blocks positions are valid
+    // (optimized version of the one in 'TetrisController'. Has less if statements)
+    private bool ValidBlocksPosition(Vector3 blockPos)
     {
         int roundX = Mathf.RoundToInt(blockPos.x);
         int roundY = Mathf.RoundToInt(blockPos.y);

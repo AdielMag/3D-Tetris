@@ -32,16 +32,14 @@ public class GameModel
     [HideInInspector] public Material fallIndicatorMat;
 
     // Private data changed in the inspector
-    [SerializeField] private ShapeModel[] shapes;
-    [SerializeField] private Color[] colors;
+    [SerializeField] private ShapeModel[] _shapes;
+    [SerializeField] private Color[] _colors;
 
     // Cubes fill base material array - used to reset 'availableFillMats' list
-    private Material[] cubeFillMats;
+    private Material[] _cubeFillMats;
 
     public void Init()
     {
-        SetAvailableShapes();
-
         // Load prefabs
         cubePrefab =
             Resources.Load<GameObject>("Prefabs/CubePrefab");
@@ -50,6 +48,8 @@ public class GameModel
 
         // Create grid
         grid = new Transform[boardWidth, boardHeight, boardDepth];
+
+        SetAvailableShapes();
 
         // Set materials
         CreateCubeFillMats();
@@ -67,7 +67,7 @@ public class GameModel
         availableShapes.Clear();
 
         // Create list based on shapes data
-        foreach (ShapeModel shape in shapes)
+        foreach (ShapeModel shape in _shapes)
             for (int x = 0; x < shape.appearanceOdds; x++)
                 availableShapes.Add(shape);
 
@@ -80,20 +80,20 @@ public class GameModel
             cubePrefab.GetComponent<MeshRenderer>().sharedMaterials[1];
 
         // Set array length by the colors length 
-        cubeFillMats = new Material[colors.Length];
+        _cubeFillMats = new Material[_colors.Length];
 
-        for (int i = 0; i < colors.Length; i++)
+        for (int i = 0; i < _colors.Length; i++)
         {
-            cubeFillMats[i] = new Material(referenceMat);
-            cubeFillMats[i].color = colors[i];
+            _cubeFillMats[i] = new Material(referenceMat);
+            _cubeFillMats[i].color = _colors[i];
 
             // Add number to the material - to differentiate between them
-            cubeFillMats[i].name += i.ToString();
+            _cubeFillMats[i].name += i.ToString();
         }
     }
     public void SetAvailableFillmats()
     {
-        availableFillMats = cubeFillMats.ToList<Material>();
+        availableFillMats = _cubeFillMats.ToList<Material>();
     }
 }
 

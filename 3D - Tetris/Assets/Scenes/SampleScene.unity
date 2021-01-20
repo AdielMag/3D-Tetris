@@ -2238,7 +2238,7 @@ MonoBehaviour:
     - {fileID: 0}
     cubeSquaresMatt: {fileID: 2100000, guid: a8645b6236bcd9c4ca9fec54200bb107, type: 2}
     fallIndicatorMat: {fileID: 2100000, guid: ac4d2591e13afe04d9dc7d87f8e7ce3d, type: 2}
-    shapes:
+    _shapes:
     - name: I
       blocksPositions:
       - {x: 0, y: 0, z: 0}
@@ -2284,9 +2284,9 @@ MonoBehaviour:
     - name: Corner
       blocksPositions:
       - {x: 0, y: 0, z: 0}
-      - {x: 0, y: -1, z: 0}
-      - {x: 0, y: -1, z: -1}
-      - {x: 1, y: -1, z: 0}
+      - {x: -1, y: 0, z: 0}
+      - {x: 0, y: 0, z: 1}
+      - {x: 0, y: 1, z: 1}
       appearanceOdds: 1
     - name: O
       blocksPositions:
@@ -2295,17 +2295,18 @@ MonoBehaviour:
       - {x: 0, y: -1, z: 0}
       - {x: 1, y: -1, z: 0}
       appearanceOdds: 1
-    colors:
-    - {r: 1, g: 0.31764707, b: 0, a: 1}
-    - {r: 1, g: 0, b: 0.76862746, a: 1}
-    - {r: 0.11372549, g: 0, b: 1, a: 1}
-    - {r: 0, g: 0.972549, b: 1, a: 1}
-    - {r: 0.13333334, g: 1, b: 0, a: 1}
+    _colors:
     - {r: 0.99215686, g: 1, b: 0, a: 1}
+    - {r: 1, g: 0.5430124, b: 0, a: 1}
+    - {r: 1, g: 0.12657738, b: 0, a: 1}
+    - {r: 1, g: 0, b: 0.92144823, a: 1}
+    - {r: 0.028681755, g: 0, b: 1, a: 1}
+    - {r: 0, g: 0.95156765, b: 1, a: 1}
+    - {r: 0, g: 1, b: 0.21683025, a: 1}
   cam:
     camParent: {fileID: 1592054901}
     camRotationSpeed: 1
-    camPitchLimits: {x: 0, y: 55}
+    camPitchLimits: {x: -35, y: 55}
     ditanceScale:
       serializedVersion: 2
       m_Curve:
@@ -6186,7 +6187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   ui: {fileID: 0}
-  gridScaler: {fileID: 680702354}
+  _gridScaler: {fileID: 680702354}
 --- !u!1 &2110781313
 GameObject:
   m_ObjectHideFlags: 0
