@@ -21,12 +21,14 @@ public class TetrisView : TetrisElement
         input.HandleInput();
     }
 
+
     // Public functions
     public void Init()
     {
         input = GetComponentInChildren<UserInputView>();
     }
 
+    // UI Input functions
     public void PressPlay()
     {
         app.controller.ui.OnInput(InputType.Play);

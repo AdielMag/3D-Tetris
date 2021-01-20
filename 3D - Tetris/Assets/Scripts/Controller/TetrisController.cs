@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 public class TetrisController : TetrisElement
 {
-    public  CameraController cam;
-    public UIController ui;
+    [HideInInspector] public CameraController cam;
+    [HideInInspector] public UIController ui;
 
+    [SerializeField] private GridMeshScaler gridScaler;
     private FallLocationIndicatorController _fallLocIndic;
 
     // MonoBehaviour functions
@@ -52,7 +53,13 @@ public class TetrisController : TetrisElement
         ui = GetComponentInChildren<UIController>();
 
         enabled = false;
+
+        gridScaler.ScaleGrid(
+            app.model.game.boardWidth,
+            app.model.game.boardDepth,
+            app.model.game.boardHeight);
     }
+
     public void StartGame()
     {
         // Remove all shapes inside the grid
@@ -234,7 +241,7 @@ public class TetrisController : TetrisElement
                 app.model.game.grid[width, rowHeight, depth] = null;
             }
 
-        UpdateScore(app.model.score + (boardWidth * boardDepth));
+        UpdateScore(app.model.currentScore + (boardWidth * boardDepth));
     }
     private void MoveRowsDown(int minRow)
     {
@@ -273,14 +280,14 @@ public class TetrisController : TetrisElement
 
         app.model.ui.scoreWindow.gameObject.SetActive(true);
 
-        app.model.ui.lostScore.text = "Score: " + app.model.score.ToString();
+        app.model.ui.lostScore.text = "Score: " + app.model.currentScore.ToString();
 
         _fallLocIndic.HideIndicatorCubes();
     }
 
     private void UpdateScore(int value)
     {
-        app.model.score = value;
+        app.model.currentScore = value;
 
         app.model.ui.inGameScore.text = "Score: " + value.ToString();
     }

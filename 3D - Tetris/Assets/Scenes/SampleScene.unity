@@ -2213,19 +2213,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9baa0807312c04286e3de573b14f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentShape: {fileID: 0}
-  highScores: []
-  score: 0
+  currentScore: 0
   shapesParent: {fileID: 1743756763}
   fallLocationCubesParent: {fileID: 842184897}
   shapePreviewParent: {fileID: 472663858}
   game:
-    timeBetweenUpdates: 1
-    timeBetweenUpdatesFast: 0.1
-    rowClearSpeedMultiplier: 1.25
     boardWidth: 7
     boardDepth: 7
     boardHeight: 10
+    timeBetweenUpdates: 1
+    timeBetweenUpdatesFast: 0.1
+    rowClearSpeedMultiplier: 1.25
+    cubePrefab: {fileID: 9058568366572184324, guid: 9c1185444db06ff4fabfc9249fd86ae3,
+      type: 3}
+    fallIndicatorCubePrefab: {fileID: 9058568366572184324, guid: 660e5e6b104e51c4fa885f7467a9e2ff,
+      type: 3}
+    availableShapes: []
+    availableFillMats:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    cubeSquaresMatt: {fileID: 2100000, guid: a8645b6236bcd9c4ca9fec54200bb107, type: 2}
+    fallIndicatorMat: {fileID: 2100000, guid: ac4d2591e13afe04d9dc7d87f8e7ce3d, type: 2}
     shapes:
     - name: I
       blocksPositions:
@@ -2290,20 +2302,6 @@ MonoBehaviour:
     - {r: 0, g: 0.972549, b: 1, a: 1}
     - {r: 0.13333334, g: 1, b: 0, a: 1}
     - {r: 0.99215686, g: 1, b: 0, a: 1}
-    cubePrefab: {fileID: 9058568366572184324, guid: 9c1185444db06ff4fabfc9249fd86ae3,
-      type: 3}
-    fallIndicatorCubePrefab: {fileID: 9058568366572184324, guid: 660e5e6b104e51c4fa885f7467a9e2ff,
-      type: 3}
-    availableShapes: []
-    availableFillMats:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    cubeSquaresMatt: {fileID: 2100000, guid: a8645b6236bcd9c4ca9fec54200bb107, type: 2}
-    fallIndicatorMat: {fileID: 2100000, guid: ac4d2591e13afe04d9dc7d87f8e7ce3d, type: 2}
   cam:
     camParent: {fileID: 1592054901}
     camRotationSpeed: 1
@@ -2341,6 +2339,8 @@ MonoBehaviour:
     highScoresParent: {fileID: 170195058}
     inGameScore: {fileID: 1888009867}
     lostScore: {fileID: 2110781315}
+  currentShape: {fileID: 0}
+  highScores: []
 --- !u!1 &888743562
 GameObject:
   m_ObjectHideFlags: 0
@@ -6186,6 +6186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   ui: {fileID: 0}
+  gridScaler: {fileID: 680702354}
 --- !u!1 &2110781313
 GameObject:
   m_ObjectHideFlags: 0

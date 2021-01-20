@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridScaler : MonoBehaviour
+public class GridMeshScaler : MonoBehaviour
 {
     private Material  _matWallsZ, _matWallsX, _matBottom;
 
-    // Start is called before the first frame update
     void Awake()
     {
         MeshRenderer meshRen = GetComponent<MeshRenderer>();
@@ -14,11 +13,6 @@ public class GridScaler : MonoBehaviour
         _matWallsZ = meshRen.sharedMaterials[0];
         _matWallsX = meshRen.sharedMaterials[1];
         _matBottom = meshRen.sharedMaterials[2];
-
-        ScaleGrid(
-            TetrisApplication.instance.model.game.boardWidth,
-            TetrisApplication.instance.model.game.boardDepth,
-            TetrisApplication.instance.model.game.boardHeight);
     }
 
     public void ScaleGrid(float width, float depth, float height)

@@ -6,6 +6,7 @@ public class UserInputView : TetrisElement
 {
     public enum RotationAxis { Right, Up, Forward }
 
+    // Fall faster flag
     [HideInInspector] public bool fallFaster;
 
     // Public functions
@@ -37,9 +38,8 @@ public class UserInputView : TetrisElement
         if (Input.GetButtonDown("RotateForwardAxis"))
             app.controller.OnRotationInput(RotationAxis.Forward);
 
-        // Fall speed
+        // Fall faster flag
         fallFaster = Input.GetButton("Space");
-
     }
 
     // Private functions

@@ -34,7 +34,7 @@ public class UIController : TetrisElement
     }
     public void OnEnteredScoreName(string _name)
     {
-        app.controller.RegisterHighScore(_name, app.model.score);
+        app.controller.RegisterHighScore(_name, app.model.currentScore);
         app.model.ui.highScoresWindow.Show();
         app.model.ui.scoreWindow.Disable();
     }
