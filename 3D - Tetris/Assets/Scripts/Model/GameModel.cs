@@ -8,11 +8,19 @@ public class GameModel
 {
     public Transform[,,] grid;
 
-    public float timeBetweenUpdates = 5;
-    public int boardWidth, boardDepth, boardHeight;
+    public float timeBetweenUpdates = 1;
+    public float timeBetweenUpdatesFast = .1f;
+
+    public float rowClearSpeedMultiplier = 1.5f;
+
+    [Space]
+    public int boardWidth = 7;
+    public int boardDepth = 7;
+    public int boardHeight = 10;
 
     [SerializeField] private ShapeModel[] shapes;
     [SerializeField] private Color[] colors;
+
     private Material[] cubeFillMats;
 
 

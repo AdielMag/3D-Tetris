@@ -7,9 +7,9 @@ public class TetrisModel : TetrisElement
     [HideInInspector] public Transform currentShape;
     [HideInInspector] public List<Score> highScores;
 
-
     public int score;
 
+    [Space]
     public Transform shapesParent;
     public Transform fallLocationCubesParent;
     public Transform shapePreviewParent;

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class FallLocationIndicatorController : TetrisElement
 {
-    private Transform _cubesParent { get { return app.model.fallLocationCubesParent; } }
+    private Transform _cubesParent 
+        { get { return app.model.fallLocationCubesParent; } }
 
     private float _alphaValue;
 
@@ -13,13 +14,16 @@ public class FallLocationIndicatorController : TetrisElement
     {
         InstantiateCubes();
 
+        // Get target material alpha and set it as base alpha
         _alphaValue = _cubesParent.GetChild(0)
             .GetComponent<MeshRenderer>().sharedMaterials[1].color.a;
     }
     public void SetNewIndicator()
     {
+        // Enable indicator
         app.model.fallLocationCubesParent.gameObject.SetActive(true);
 
+        // Enable \ disable based on needed cubes (current shape number of cubes)
         for (int i = 0; i < _cubesParent.childCount; i++)
         {
             bool activeState = i < app.model.currentShape.childCount;
@@ -35,6 +39,7 @@ public class FallLocationIndicatorController : TetrisElement
     }
     public void HideIndicatorCubes()
     {
+        // Disable indicator
         app.model.fallLocationCubesParent.gameObject.SetActive(false);
     }
 
@@ -56,9 +61,11 @@ public class FallLocationIndicatorController : TetrisElement
         // Create the max amount of cubes that the game will need
         for (int i = 0; i < maxCubeCountInShapes; i++)
         {
+            // Get prefab
             GameObject cube =
                 Instantiate(app.model.game.fallIndicatorCubePrefab, _cubesParent);
 
+            // Set material
             cube.GetComponent<MeshRenderer>()
                 .sharedMaterials[1] = app.model.game.fallIndicatorMat;
         }
@@ -69,12 +76,15 @@ public class FallLocationIndicatorController : TetrisElement
     { 
         Color targetColor;
 
+        // Get color from current shape
         targetColor = 
             app.model.currentShape.GetChild(0)
             .GetComponent<MeshRenderer>().materials[1].color;
 
+        // Change color alpha
         targetColor.a = _alphaValue;
 
+        // Set color
         app.model.game.fallIndicatorMat.color = targetColor;
     }
     private void UpdateBlocksPositions()
@@ -91,7 +101,7 @@ public class FallLocationIndicatorController : TetrisElement
             // the shape from falling to the floor and store
             // its y position to position the indicator in the right place
             for (int y = Mathf.FloorToInt(targetY); y > 0; y--)
-                if (!Valid(new Vector3(cube.position.x, y - 1, cube.position.z)))
+                if (!ValidPos(new Vector3(cube.position.x, y - 1, cube.position.z)))
                 {
                     targetY -= y;
                     break;
@@ -111,7 +121,7 @@ public class FallLocationIndicatorController : TetrisElement
             _cubesParent.GetChild(i).position = indicatorCubeTargetPos;
         }
     }
-    private bool Valid(Vector3 blockPos)
+    private bool ValidPos(Vector3 blockPos)
     {
         int roundX = Mathf.RoundToInt(blockPos.x);
         int roundY = Mathf.RoundToInt(blockPos.y);

@@ -6,6 +6,15 @@ public class TetrisView : TetrisElement
 {
     [HideInInspector] public UserInputView input;
 
+    public enum InputType
+    {
+        Play,
+        BackeToMenu,
+        Exit,
+        Pause,
+        Unpause
+    }
+
     // MonoBehaviour functions
     private void Update()
     {
@@ -20,40 +29,26 @@ public class TetrisView : TetrisElement
 
     public void PressPlay()
     {
-        app.model.ui.startWindow.Disable();
-
-        app.model.ui.inGameWindow.Show();
-
-        app.controller.StartGame();
+        app.controller.ui.OnInput(InputType.Play);
     }
     public void PressBackToMenu()
     {
-        app.model.ui.inGameWindow.Disable();
-        app.model.ui.scoreWindow.Disable();
-        app.model.ui.pauseWindow.Disable();
-
-        app.model.ui.startWindow.Show();
+        app.controller.ui.OnInput(InputType.BackeToMenu);
     }
     public void PressExit()
     {
-        app.ExitApplication();
+        app.controller.ui.OnInput(InputType.Exit);
     }
     public void PressPause()
     {
-        app.controller.enabled = false;
-        app.model.ui.pauseWindow.Show();
+        app.controller.ui.OnInput(InputType.Pause);
     }
     public void PressUnpause()
     {
-        app.controller.enabled = true;
-        app.model.ui.pauseWindow.Disable();
+        app.controller.ui.OnInput(InputType.Unpause);
     }
     public void EnterScoreName(string name) 
     {
-        app.controller.RegisterHighScore(name, app.model.score);
-
-        app.model.ui.highScoresWindow.Show();
-
-        app.model.ui.scoreWindow.Disable();
+        app.controller.ui.OnEnteredScoreName(name);
     }
 }

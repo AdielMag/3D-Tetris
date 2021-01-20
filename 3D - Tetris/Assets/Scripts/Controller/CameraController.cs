@@ -20,7 +20,6 @@ public class CameraController : TetrisElement
         _pitch = app.model.cam.camParent.eulerAngles.x;
 
         CalculateBaseDistance();
-
         SetCameraDistance();
     }
     public void OnPlayerInput(Vector2 inputDelta)
@@ -67,7 +66,6 @@ public class CameraController : TetrisElement
         app.model.cam.camParent.eulerAngles
             = new Vector3(_pitch, _yaw, 0.0f);
 
-        // Set camera distance
         SetCameraDistance();
     }
     private void CalculateBaseDistance()
@@ -79,7 +77,9 @@ public class CameraController : TetrisElement
             + app.model.game.boardWidth
             + app.model.game.boardHeight;
 
+
         // When the dimensions magnitucde is 15 the distance is -9
+        // (only when the height is not extremely bigger then the other ones)
         float referenceDistance = -9;
         int referenceMagnitude = 15;
 
@@ -93,7 +93,7 @@ public class CameraController : TetrisElement
     private void SetCameraDistance()
     {
         // Use curve to change the distance based on pitch
-        //  precentage from max limit (pitch/maxPitch)
+        // precentage from max limit (pitch/maxPitch)
         _cameraChild.transform.localPosition = new Vector3(0, 0,
             _baseDistance * app.model.cam.ditanceScale.Evaluate
             (_pitch / app.model.cam.camPitchLimits.y));

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TetrisController : TetrisElement
 {
     public  CameraController cam;
+    public UIController ui;
 
     private FallLocationIndicatorController _fallLocIndic;
 
@@ -14,7 +15,8 @@ public class TetrisController : TetrisElement
     private void Update()
     {
         float timeToWait = app.view.input.fallFaster ?
-            app.model.game.timeBetweenUpdates / 10 : app.model.game.timeBetweenUpdates;
+            app.model.game.timeBetweenUpdatesFast
+            : app.model.game.timeBetweenUpdates;
 
         if (Time.time - _previousUpdateTime > timeToWait)
         {
@@ -26,7 +28,7 @@ public class TetrisController : TetrisElement
     // Public functions
     public void Init()
     {
-        // Add offset to the board if it's even
+        // Add offset to the board if axis dimension is even
         float boardXOffset =
             app.model.game.boardWidth % 2 != 0 ? 0 : -.5f;
         float boardZOffset =
@@ -43,8 +45,11 @@ public class TetrisController : TetrisElement
         cam = GetComponentInChildren<CameraController>();
         cam.Init();
 
-        _fallLocIndic = GetComponentInChildren<FallLocationIndicatorController>();
+        _fallLocIndic =
+            GetComponentInChildren<FallLocationIndicatorController>();
         _fallLocIndic.Init();
+
+        ui = GetComponentInChildren<UIController>();
 
         enabled = false;
     }
@@ -170,6 +175,7 @@ public class TetrisController : TetrisElement
             ShapeColided();
         }
     }
+
     private void ShapeColided()
     {
         bool reachedTop = AddCurrentShapeBlocksToGrid();
@@ -210,6 +216,8 @@ public class TetrisController : TetrisElement
                 ClearRow(height);
                 // Move top rows down
                 MoveRowsDown(height);
+                // Increase game speed
+                IncreaseGameSpeed();
             }
     }
     private void ClearRow(int rowHeight) 
@@ -248,6 +256,13 @@ public class TetrisController : TetrisElement
                         cube.position -= Vector3.up;
                     }
                 }
+    }
+    private void IncreaseGameSpeed()
+    {
+        app.model.game.timeBetweenUpdatesFast
+            /= app.model.game.rowClearSpeedMultiplier;
+        app.model.game.timeBetweenUpdates
+            /= app.model.game.rowClearSpeedMultiplier;
     }
 
     private void GameLost() 
